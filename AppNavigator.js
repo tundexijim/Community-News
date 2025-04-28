@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -10,14 +10,24 @@ import AddNewsScreen from "./screens/AddNewsScreen"; // Create this screen next
 import SingleNewsScreen from "./screens/SingleNewsScreen";
 import { Ionicons } from "@expo/vector-icons";
 import Main from "./screens/tabscreens/Main";
-
-import { TouchableOpacity } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { useThemeStyles } from "./context/useThemeStyles";
+import { AuthContext } from "./context/AuthContext";
+import AdminApprovalScreen from "./screens/AdminApprovalScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   const { isDark, style } = useThemeStyles();
+  const { loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
@@ -66,6 +76,11 @@ export default function AppNavigator() {
           name="SingleNews"
           component={SingleNewsScreen}
           options={{ title: "News Details" }}
+        />
+        <Stack.Screen
+          name="Admin"
+          component={AdminApprovalScreen}
+          options={{ title: "Admin" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

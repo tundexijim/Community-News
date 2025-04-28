@@ -29,9 +29,6 @@ const LoginScreen = () => {
         password
       );
       const user = userCredential.user;
-
-      // setPersistence(auth, browserLocalPersistence);
-      // console.log(user);
       if (user) {
         navigation.dispatch(
           CommonActions.reset({
@@ -44,7 +41,6 @@ const LoginScreen = () => {
       Alert.alert("Login Error", error.message);
     }
   };
-
   return (
     <View style={[styles.container, style.background]}>
       <TextInput
@@ -55,8 +51,8 @@ const LoginScreen = () => {
         style={[
           styles.input,
           {
-            borderColor: isDark ? "#444" : "#ccc", // theme‑driven border color
-            borderBottomWidth: 1, // ensure the border is visible
+            borderColor: isDark ? "#444" : "#ccc",
+            borderBottomWidth: 1,
           },
           style.text,
         ]}

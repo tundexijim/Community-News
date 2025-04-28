@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -23,36 +23,16 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { CommonActions, useTheme } from "@react-navigation/native";
 import uuid from "react-native-uuid";
 import { useThemeStyles } from "../context/useThemeStyles";
+import { AuthContext } from "../context/AuthContext";
 
 const AddNewsScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [category, setCategory] = useState("Politics");
   const [image, setImage] = useState(null);
-  const [isContributor, setIsContributor] = useState(false);
   const [categories, setCategories] = useState([]);
   const { style, isDark } = useThemeStyles();
-
-  useEffect(() => {
-    const checkRole = async () => {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
-
-      const userDoc = await getDoc(doc(db, "users", uid));
-      if (userDoc.exists() && userDoc.data().role === "contributor") {
-        setIsContributor(true);
-      } else {
-        Alert.alert("Access Denied", "You are not authorized to add news.");
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "NewsFeed" }],
-          })
-        );
-      }
-    };
-    checkRole();
-  }, []);
+  const { userRole } = useContext(AuthContext);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "categories"), (snapshot) => {
@@ -126,7 +106,7 @@ const AddNewsScreen = ({ navigation }) => {
     }
   };
 
-  if (!isContributor) return null;
+  if (userRole !== "contributor") return null;
 
   return (
     <View style={[styles.container, style.background]}>

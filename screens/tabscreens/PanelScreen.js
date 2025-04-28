@@ -97,6 +97,15 @@ const PanelScreen = ({ navigation }) => {
         </TouchableOpacity>
       )}
 
+      {userRole === "admin" && (
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => navigation.navigate("Admin")}
+        >
+          <Text style={[styles.itemText, style.text]}>Approve User</Text>
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity style={styles.loginButton} onPress={handleAuth}>
         <Text style={styles.loginText}>{user ? "Log Out" : "Log In"}</Text>
       </TouchableOpacity>

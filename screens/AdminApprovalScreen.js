@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,30 +17,14 @@ import {
 import { db, auth } from "../firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 import { useThemeStyles } from "../context/useThemeStyles";
-import { onAuthStateChanged } from "firebase/auth";
-import { getDoc } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 
 const AdminApprovalScreen = () => {
   const [allNews, setAllNews] = useState([]);
-  const [userRole, setUserRole] = useState(null);
+  // const [userRole, setUserRole] = useState(null);
   const navigation = useNavigation();
   const { style } = useThemeStyles();
-
-  useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        if (userDoc.exists() && userDoc.data().role === "admin") {
-          setUserRole("admin");
-        } else {
-          Alert.alert("Access Denied", "Only admins can access this screen.");
-          navigation.goBack();
-        }
-      }
-    });
-
-    return () => unsubAuth();
-  }, []);
+  const { userRole } = useContext(AuthContext);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "news"), (snapshot) => {

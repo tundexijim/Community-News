@@ -3,10 +3,12 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
+import { useThemeStyles } from "../context/useThemeStyles";
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { style, isDark } = useThemeStyles();
 
   const handleSignUp = async () => {
     try {
@@ -17,10 +19,9 @@ const SignUpScreen = ({ navigation }) => {
       );
       const user = userCredential.user;
 
-      // Store role in Firestore (default to 'reader')
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-        role: "reader", // or 'contributor' if selected manually by admin
+        role: "reader",
       });
 
       Alert.alert("Signup Successful", "Welcome to Community News!");
@@ -36,19 +37,35 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style.background]}>
       <TextInput
         placeholder="Email"
+        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            borderColor: isDark ? "#444" : "#ccc",
+            borderBottomWidth: 1,
+          },
+          style.text,
+        ]}
       />
       <TextInput
         placeholder="Password"
+        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            borderColor: isDark ? "#444" : "#ccc",
+            borderBottomWidth: 1,
+          },
+          style.text,
+        ]}
       />
       <Button title="Sign Up" onPress={handleSignUp} />
     </View>
@@ -56,7 +73,7 @@ const SignUpScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
+  container: { padding: 20, flex: 1 },
   input: { marginBottom: 15, borderBottomWidth: 1, padding: 8 },
 });
 

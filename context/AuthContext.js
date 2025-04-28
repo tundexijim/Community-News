@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -8,14 +8,11 @@ export const AuthContext = createContext({ user: null });
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return unsubscribe;
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
       if (currentUser) {
         try {
           const userDoc = await getDoc(doc(db, "users", currentUser.uid));
@@ -31,13 +28,14 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUserRole(null);
       }
+      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
-  //   console.log(user);
+
   return (
-    <AuthContext.Provider value={{ user, userRole }}>
+    <AuthContext.Provider value={{ user, userRole, loading }}>
       {children}
     </AuthContext.Provider>
   );
