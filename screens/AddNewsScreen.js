@@ -113,14 +113,14 @@ const AddNewsScreen = ({ navigation }) => {
       <Text style={[styles.heading, style.text]}>Post a News Article</Text>
       <TextInput
         placeholder="Title"
-        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
+        placeholderTextColor={style.text.color}
         value={title}
         onChangeText={setTitle}
         style={[styles.input, style.text]}
       />
       <TextInput
         placeholder="Body"
-        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
+        placeholderTextColor={style.text.color}
         value={body}
         onChangeText={setBody}
         style={[styles.input, { height: 100 }, style.text]}

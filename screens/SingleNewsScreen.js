@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,13 +18,15 @@ import {
 import { db } from "../firebaseConfig";
 import { useThemeStyles } from "../context/useThemeStyles";
 import { AuthContext } from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 const SingleNewsScreen = ({ route, navigation }) => {
   const { news } = route.params;
 
   const [relatedNews, setRelatedNews] = useState([]);
   const { style } = useThemeStyles();
-  const { userRole } = useContext(AuthContext);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     const q = query(
@@ -43,6 +45,63 @@ const SingleNewsScreen = ({ route, navigation }) => {
     return () => unsubscribe();
   }, [news]);
 
+  useEffect(() => {
+    checkIfBookmarked();
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={{ marginRight: 16 }} onPress={toggleBookmark}>
+          <Ionicons
+            name={isBookmarked ? "heart" : "heart-outline"}
+            size={24}
+            color={isBookmarked ? "red" : style.text.color}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, isBookmarked, style]);
+
+  const checkIfBookmarked = async () => {
+    const saved = await AsyncStorage.getItem("bookmarks");
+    const bookmarks = saved ? JSON.parse(saved) : [];
+    const found = bookmarks.find((item) => item.id === news.id);
+    setIsBookmarked(!!found);
+  };
+
+  const toggleBookmark = async () => {
+    const saved = await AsyncStorage.getItem("bookmarks");
+    const bookmarks = saved ? JSON.parse(saved) : [];
+
+    if (isBookmarked) {
+      // remove bookmark
+      const updated = bookmarks.filter((item) => item.id !== news.id);
+      await AsyncStorage.setItem("bookmarks", JSON.stringify(updated));
+      setIsBookmarked(false);
+    } else {
+      // add bookmark
+      await AsyncStorage.setItem(
+        "bookmarks",
+        JSON.stringify([news, ...bookmarks])
+      );
+      setIsBookmarked(true);
+    }
+  };
+  const formatDate = (createdAt) => {
+    if (!createdAt) return ""; // safeguard
+
+    if (createdAt.toDate) {
+      // Firestore Timestamp object
+      return new Date(createdAt.toDate()).toLocaleString();
+    } else if (typeof createdAt === "string") {
+      // Already a string (from AsyncStorage)
+      return new Date(createdAt).toLocaleString();
+    } else {
+      return ""; // fallback
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={[styles.container, style.background]}>
       {news.imageURL && (
@@ -50,7 +109,7 @@ const SingleNewsScreen = ({ route, navigation }) => {
       )}
       <Text style={[styles.title, style.text]}>{news.title}</Text>
       <Text style={[styles.meta, style.text]}>
-        {news.category} | {new Date(news.createdAt?.toDate()).toLocaleString()}
+        {news.category} | {formatDate(news.createdAt)}
       </Text>
       <Text style={[styles.body, style.text]}>{news.body}</Text>
 

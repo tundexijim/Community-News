@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,11 +17,26 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useThemeStyles } from "../../context/useThemeStyles";
+import { Ionicons } from "@expo/vector-icons";
 
 const NewsFeedScreen = ({ navigation }) => {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { style } = useThemeStyles();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={{ marginRight: 16 }}
+          onPress={() => navigation.navigate("Search")}
+          activeOpacity={0.6}
+        >
+          <Ionicons name="search-outline" size={24} color={style.text.color} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, style]);
 
   useEffect(() => {
     const q = query(
@@ -29,7 +44,6 @@ const NewsFeedScreen = ({ navigation }) => {
       where("approved", "==", true),
       orderBy("createdAt", "desc")
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const newsData = snapshot.docs.map((doc) => ({
         id: doc.id,

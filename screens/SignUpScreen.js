@@ -4,11 +4,13 @@ import { auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { useThemeStyles } from "../context/useThemeStyles";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { style, isDark } = useThemeStyles();
+  const navigation = useNavigation();
 
   const handleSignUp = async () => {
     try {
@@ -28,7 +30,7 @@ const SignUpScreen = ({ navigation }) => {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: "NewsFeed" }],
+          routes: [{ name: "Main" }],
         })
       );
     } catch (error) {

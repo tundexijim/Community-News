@@ -102,7 +102,7 @@ const PanelScreen = ({ navigation }) => {
           style={styles.item}
           onPress={() => navigation.navigate("Admin")}
         >
-          <Text style={[styles.itemText, style.text]}>Approve User</Text>
+          <Text style={[styles.itemText, style.text]}>Approve News</Text>
         </TouchableOpacity>
       )}
 

@@ -45,7 +45,7 @@ const LoginScreen = () => {
     <View style={[styles.container, style.background]}>
       <TextInput
         placeholder="Email"
-        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
+        placeholderTextColor={style.text.color}
         value={email}
         onChangeText={setEmail}
         style={[
@@ -59,15 +59,15 @@ const LoginScreen = () => {
       />
       <TextInput
         placeholder="Password"
-        placeholderTextColor={isDark ? "#D1D5DB" : "	#6B7280"}
+        placeholderTextColor={style.text.color}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         style={[
           styles.input,
           {
-            borderColor: isDark ? "#444" : "#ccc", // theme‑driven border color
-            borderBottomWidth: 1, // ensure the border is visible
+            borderColor: isDark ? "#444" : "#ccc",
+            borderBottomWidth: 1,
           },
           style.text,
         ]}

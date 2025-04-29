@@ -14,6 +14,7 @@ import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { useThemeStyles } from "./context/useThemeStyles";
 import { AuthContext } from "./context/AuthContext";
 import AdminApprovalScreen from "./screens/AdminApprovalScreen";
+import SearchScreen from "./screens/SearchScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -80,7 +81,12 @@ export default function AppNavigator() {
         <Stack.Screen
           name="Admin"
           component={AdminApprovalScreen}
-          options={{ title: "Admin" }}
+          options={{ title: "News Approval" }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchScreen}
+          options={{ title: "Search" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

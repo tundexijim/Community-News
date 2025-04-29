@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native";
 import PanelScreen from "./PanelScreen";
 import { useThemeStyles } from "../../context/useThemeStyles";
+import BookmarkScreen from "./BookmarkScreens";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +24,8 @@ const Main = () => {
             iconName = focused ? "list" : "list-outline";
           } else if (route.name === "More") {
             iconName = "ellipsis-vertical";
+          } else if (route.name === "Bookmarks") {
+            iconName = focused ? "bookmark" : "bookmark-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -62,6 +65,11 @@ const Main = () => {
         name="Categories"
         options={{ title: "" }}
         component={CategoriesScreen}
+      />
+      <Tab.Screen
+        name="Bookmarks"
+        options={{ title: "" }}
+        component={BookmarkScreen}
       />
       <Tab.Screen name="More" options={{ title: "" }} component={PanelScreen} />
     </Tab.Navigator>
